@@ -69,14 +69,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shelf-h .cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .shelf-h button{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;padding:4px 0}
 .row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-right:16px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.row .card{flex:0 0 142px;scroll-snap-align:start}
+.row .card{flex:0 0 132px;scroll-snap-align:start}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}
 .card{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;text-decoration:none;color:inherit;cursor:pointer;transition:transform .15s,border-color .15s}
 .card:hover{transform:translateY(-2px);border-color:var(--accent)}
 .card.flash{animation:flash 1.6s ease}
 @keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
-.thumb{aspect-ratio:1;max-width:100%;background:#fff;display:grid;place-items:center;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:contain}
+.thumb{aspect-ratio:3/4;max-width:100%;background:#fff;display:grid;place-items:center;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
 .ph{width:100%;height:100%;display:grid;place-items:center;background:var(--soft);color:var(--soft-ink);font-family:var(--f-num);font-size:38px}
 .meta{display:flex;flex-direction:column;gap:2px;padding:9px 11px 11px}
 .meta .no{font-family:var(--f-num);font-size:15px;color:var(--accent);letter-spacing:.02em}
@@ -138,14 +138,14 @@ function thumb(i){var src=safeImg(i.img);return '<div class="thumb">'+(src?'<img
 function card(i,isNew){
   var u=safeUrl(i.url);
   return '<a class="card" id="no-'+i.n+'" data-n="'+i.n+'" href="'+(u?esc(u):'#')+'"'+(u?' target="_blank" rel="noopener sponsored"':'')+'>'
-    +thumb(i)+'<div class="meta"><span class="no">No.'+pad(i.n)+'</span><span class="nm">'+esc(i.name)+'</span></div>'
+    +thumb(i)+'<div class="meta"><span class="no">No.'+pad(i.n)+'</span><span class="nm">'+esc(i.name||catName(i.cat))+'</span></div>'
     +(isNew?'<span class="new">NEW</span>':'')+'</a>';
 }
 
 function shell(){
   app.innerHTML='<div id="top"></div>'
    +'<div class="search"><form class="sbox" id="sform" role="search"><span class="hash" aria-hidden="true">No.</span>'
-   +'<input id="q" type="search" inputmode="search" autocomplete="off" placeholder="릴스 번호 또는 상품명" aria-label="번호 또는 상품명 검색">'
+   +'<input id="q" type="search" inputmode="search" autocomplete="off" placeholder="릴스 속 번호 입력 (예: 1)" aria-label="릴스 번호로 찾기">'
    +'<button type="button" class="xbtn" id="qx" aria-label="검색어 지우기" hidden>×</button><button class="sbtn" type="submit">찾기</button></form>'
    +'<div class="chips" id="chips"></div></div>'
    +'<section class="res" id="res" hidden></section><div id="shelves" style="display:flex;flex-direction:column;gap:26px"></div>'
@@ -205,8 +205,8 @@ function renderResults(commit){
     sh.hidden=false;res.hidden=false;
     if(it){
       var u=safeUrl(it.url);
-      res.innerHTML='<div class="hit">'+thumb(it)+'<div style="min-width:0"><div class="no">No.'+pad(it.n)+'</div><h2>'+esc(it.name)+'</h2>'
-        +'<p>'+esc(it.note||catName(it.cat))+'</p>'
+      res.innerHTML='<div class="hit">'+thumb(it)+'<div style="min-width:0"><div class="no">No.'+pad(it.n)+'</div><h2>'+esc(it.name||catName(it.cat)+' 꿀템')+'</h2>'
+        +'<p>'+esc(it.note||'릴스에서 소개한 바로 그 제품이에요.')+'</p>'
         +(u?'<a class="buy" href="'+esc(u)+'" target="_blank" rel="noopener sponsored">쿠팡에서 보기 →</a>':'<span class="buy" aria-disabled="true">링크 준비 중</span>')
         +'</div></div>';
       if(commit){try{if(location.hash!=='#no-'+n)history.replaceState(null,'','#no-'+n)}catch(e){}}
