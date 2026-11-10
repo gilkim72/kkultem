@@ -52,6 +52,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:500;cursor:pointer}
 
 .res{display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.02em}
 .res-h{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--muted)}
 .hit{display:grid;grid-template-columns:132px 1fr;gap:16px;background:var(--surface);border:2px solid var(--accent);border-radius:18px;padding:14px;align-items:center}
 .hit .thumb{border-radius:12px}
@@ -196,19 +197,20 @@ function setQuery(v,commit){
   document.getElementById('qx').hidden=!query;
   renderResults(commit);
 }
+function hitHtml(it){var u=safeUrl(it.url);return '<div class="hit">'+thumb(it)+'<div style="min-width:0"><div class="no">No.'+pad(it.n)+'</div><h2>'+esc(it.name||catName(it.cat)+' 꿀템')+'</h2>'
+        +'<p>'+esc(it.note||'릴스에서 소개한 바로 그 제품이에요.')+'</p>'
+        +(u?'<a class="buy" href="'+esc(u)+'" target="_blank" rel="noopener sponsored">쿠팡에서 보기 →</a>':'<span class="buy" aria-disabled="true">링크 준비 중</span>')
+        +'</div></div>';}
 function renderResults(commit){
   var res=document.getElementById('res'),sh=document.getElementById('shelves');
-  if(!query){res.hidden=true;sh.hidden=false;return}
+  if(!query){var lt=S.items.slice().sort(byN)[0];sh.hidden=false;if(!lt){res.hidden=true;return}res.hidden=false;res.innerHTML='<div class="res-h"><span class="eyebrow">방금 올라온 꿀템</span></div>'+hitHtml(lt);return}
   var num=query.replace(/^no\.?\s*/i,'').replace(/^#/,'');
   if(/^\d+$/.test(num)){
     var n=parseInt(num,10),it=S.items.find(function(i){return +i.n===n});
     sh.hidden=false;res.hidden=false;
     if(it){
       var u=safeUrl(it.url);
-      res.innerHTML='<div class="hit">'+thumb(it)+'<div style="min-width:0"><div class="no">No.'+pad(it.n)+'</div><h2>'+esc(it.name||catName(it.cat)+' 꿀템')+'</h2>'
-        +'<p>'+esc(it.note||'릴스에서 소개한 바로 그 제품이에요.')+'</p>'
-        +(u?'<a class="buy" href="'+esc(u)+'" target="_blank" rel="noopener sponsored">쿠팡에서 보기 →</a>':'<span class="buy" aria-disabled="true">링크 준비 중</span>')
-        +'</div></div>';
+      res.innerHTML=hitHtml(it);
       if(commit){try{if(location.hash!=='#no-'+n)history.replaceState(null,'','#no-'+n)}catch(e){}}
     }else{
       res.innerHTML='<div class="empty"><b>No.'+pad(n)+'</b>아직 등록되지 않은 번호예요. 번호를 다시 확인해 주세요.</div>';
