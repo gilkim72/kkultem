@@ -23,6 +23,10 @@
     {
       "id": "c4",
       "name": "육아·키즈"
+    },
+    {
+      "id": "c5",
+      "name": "건강"
     }
   ],
   "items": [
@@ -32,6 +36,14 @@
       "cat": "c3",
       "url": "https://link.coupang.com/a/iyP3oeYA3w",
       "img": "img/001.jpg",
+      "note": ""
+    },
+    {
+      "n": 2,
+      "name": "한가인 유산균",
+      "cat": "c5",
+      "url": "https://link.coupang.com/a/izkFunxsU8",
+      "img": "img/002.jpg",
       "note": ""
     }
   ]
